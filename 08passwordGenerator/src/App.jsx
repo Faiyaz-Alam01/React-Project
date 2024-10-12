@@ -1,5 +1,5 @@
-import { useCallback, useState ,useEffect,useRef} from 'react'
-import './App.css'
+import { useCallback, useEffect, useRef, useState } from 'react';
+import './App.css';
 
 function App() {
   const [length, setLength] = useState(8)
@@ -7,9 +7,7 @@ function App() {
   const [charAllowed, setCharAllowed] = useState(false);
   const[password, setPassword] = useState("");
 
-  //useRef Hook
-  const passwordRef =useRef(null)
-
+  //useCallback : PassWord Generator function
   const passwordGenerator = useCallback(()=>{
     let pass = "";
     let str = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
@@ -18,19 +16,24 @@ function App() {
     if(charAllowed) str+="!@#$%^&*()";
 
     for (let i = 1; i <= length; i++) {
-      let char= Math.floor(Math.random()*str.length + 1);
+      let char= Math.floor(Math.random()*str.length + 1); // char : index stoe
 
       pass += str.charAt(char);
 
-      setPassword(pass);
     }
+    setPassword(pass);
 
   },[length,numberAllowed,charAllowed,setPassword])
 
+
+    //useRef Hook
+    const passwordRef =useRef(null)
+
+  //useRef hooks for copy copyPasswordToClipboard text
   const copyPasswordToClipboard = useCallback(() => {
     passwordRef.current?.select(); //select clipboard chang bg color
     passwordRef.current?.setSelectionRange(0,100);  //select range 0 to 3 text
-    window.navigator.clipboard.writeText(password)
+    window.navigator.clipboard.writeText(password)  //copy text of password
   }, [password])
 
   //length,numberAllowed,charAllowed isme kuchh bhi chnage ho to phir se code run karo
@@ -60,14 +63,15 @@ function App() {
           </div>
 
           <div className='flex text-sm gap-x-2'>
-            <div className='flex items-center gap-x1'>
+            <div className='flex items-center gap-x-1'>
               <input 
               type="range" 
               min={8}
               max={100}
               value={length}
               className='cursor-pointer'
-              onChange={(e)=> {setLength(e.target.value)}}
+              onChange={(e)=> {setLength(e.target.value)}} //onchange direct nhi de sakta becuase hame ek event bhi dena hota h
+              //jab ham event pass karenge to hi wah call kar sakta setLength ko
               />
               <label>Length: {length}</label>
             </div>
@@ -78,7 +82,8 @@ function App() {
               defaultChecked = {numberAllowed}
               id='numberInput'
               onChange={()=> {
-                setNumberAllowed((prev) => !prev)
+                setNumberAllowed((prev) => !prev) //((prev) => !prev) se false and true flip hoga 
+                //setNumberAllowed (true) karne se wah always true hi ho jayega jo hame nhi chahiye
               }}
               />
               <label htmlFor="numberInput">Numbers</label>
@@ -90,13 +95,11 @@ function App() {
               defaultChecked = {charAllowed}
               id='charInput'
               onChange={()=> {
-                setCharAllowed((prev) => !prev)
+                setCharAllowed((prev) => !prev) //call back fire 
               }}
               />
               <label htmlFor="charInput">Characters</label>
             </div>
-
-
           </div>
       </div>
     </>
